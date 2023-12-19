@@ -34,7 +34,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:8080/hotel/657b35fb08c0ee65027cedeb",
+							"raw": "http://localhost:8080/hotel/658090b891cda801bf3e1a9d",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -42,7 +42,7 @@
 							"port": "8080",
 							"path": [
 								"hotel",
-								"657b35fb08c0ee65027cedeb"
+								"658090b891cda801bf3e1a9d"
 							]
 						}
 					},
@@ -111,7 +111,7 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:8080/hotel/657b3db3be21676668d130cf",
+							"raw": "http://localhost:8080/hotel/6581b085f4874076f8e7da40",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -119,7 +119,7 @@
 							"port": "8080",
 							"path": [
 								"hotel",
-								"657b3db3be21676668d130cf"
+								"6581b085f4874076f8e7da40"
 							]
 						}
 					},
@@ -128,12 +128,144 @@
 			]
 		},
 		{
-			"name": "asa",
-			"request": {
-				"method": "GET",
-				"header": []
-			},
-			"response": []
+			"name": "msvc-lab-room",
+			"item": [
+				{
+					"name": "findAll",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8081/room",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8081",
+							"path": [
+								"room"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "findAll id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8081/room/657cc01be5262f48fcecb5b3",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8081",
+							"path": [
+								"room",
+								"657cc01be5262f48fcecb5b3"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "save",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"roomNumber\": 1,\r\n    \"description\": \"casa2\",\r\n    \"floor\": 2,\r\n    \"maxGuest\": 5,\r\n    \"roomType\": {\r\n        \"id\": \"657cc01be5262f48fcecb5b1\",\r\n        \"name\": \"vip\"\r\n    },\r\n    \"hotelId\": \"657cc01be5262f48fcecb5b3\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8081/room",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8081",
+							"path": [
+								"room"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update room",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "    {\r\n        \"roomNumber\": 112,\r\n        \"description\": \"casa21\",\r\n        \"floor\": 21,\r\n        \"maxGuest\": 51,\r\n        \"roomType\": {\r\n            \"id\": \"657cc01be5262f48fcecb5b12\",\r\n            \"name\": \"vip2\"\r\n        },\r\n        \"hotelId\": \"657cc01be5262f48fcecb5b32\"\r\n    }",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8081/room/657d11cc5b8d1b4c92b2c8f3",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8081",
+							"path": [
+								"room",
+								"657d11cc5b8d1b4c92b2c8f3"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8081/room/657d0a26e5b19576f1372961",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8081",
+							"path": [
+								"room",
+								"657d0a26e5b19576f1372961"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Find all room types",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8081/type",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8081",
+							"path": [
+								"type"
+							]
+						}
+					},
+					"response": []
+				}
+			]
 		}
 	]
 }

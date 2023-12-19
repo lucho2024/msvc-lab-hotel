@@ -1,12 +1,18 @@
 package com.sunset.rider.msvclabhotel.controller;
 
 import com.sunset.rider.msvclabhotel.model.documents.Hotel;
+import com.sunset.rider.msvclabhotel.model.request.HotelRequest;
+import com.sunset.rider.msvclabhotel.model.utils.ErrorNotFound;
 import com.sunset.rider.msvclabhotel.service.HotelService;
+import jakarta.validation.Valid;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.support.WebExchangeBindException;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -18,6 +24,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/hotel")
+@Slf4j
 public class HotelController {
     @Autowired
     private HotelService hotelService;
@@ -38,25 +45,35 @@ public class HotelController {
     }
 
     @PostMapping
-    public Mono<ResponseEntity<Map<String, Object>>> save(@RequestBody Mono<Hotel> hotel) {
+    public Mono<ResponseEntity<Map<String, Object>>> save(@Valid @RequestBody Mono<HotelRequest> hotel) {
 
         Map<String, Object> respuesta = new HashMap<>();
 
 
         return hotel.flatMap(h -> {
-            h.setCreatedAt(LocalDateTime.now());
-            h.setUpdatedAt(LocalDateTime.now());
+                    return hotelService.save(createHotelDb(h, null, null))
+                            .map(hotelResponse -> {
+                                respuesta.put("hotel", hotelResponse);
+                                respuesta.put("timestamp", new Date());
 
-            return hotelService.save(h)
-                    .map(hotelResponse -> {
-                        respuesta.put("hotel", hotelResponse);
-                        respuesta.put("timestamp", new Date());
-
-                        return ResponseEntity.created(URI.create("/hotel/".concat(hotelResponse.getId())))
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .body(respuesta);
-                    });
-        });
+                                return ResponseEntity.created(URI.create("/hotel/".concat(hotelResponse.getId())))
+                                        .contentType(MediaType.APPLICATION_JSON)
+                                        .body(respuesta);
+                            });
+                })
+                .onErrorResume(t -> {
+                    return Mono.just(t).cast(WebExchangeBindException.class)
+                            .flatMap(e -> Mono.just(e.getFieldErrors()))
+                            .flatMapMany(Flux::fromIterable)
+                            .map(fieldError -> "El campo : " + fieldError.getField() + " "
+                                    + fieldError.getDefaultMessage())
+                            .collectList()
+                            .flatMap(list -> {
+                                respuesta.put("errores", list);
+                                respuesta.put("timestamp", new Date());
+                                return Mono.just(ResponseEntity.badRequest().body(respuesta));
+                            });
+                });
 
 
     }
@@ -71,12 +88,49 @@ public class HotelController {
     }
 
     @PutMapping("/{id}")
-    public Mono<ResponseEntity<Hotel>> update(@PathVariable String id){
+    public Mono<ResponseEntity<Map<String, Object>>> update(@PathVariable String id, @Valid @RequestBody Mono<HotelRequest> hotelRequest) {
+
+        Map<String, Object> respuesta = new HashMap<>();
+
         return hotelService.findyById(id)
-                .map(hotel -> ResponseEntity.created(URI.create("/hotel/".concat(hotel.getId())))
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .body(hotel))
-                .defaultIfEmpty(ResponseEntity.notFound().build());
+                .zipWith(hotelRequest)
+                .flatMap(tupla -> hotelService.save(createHotelDb(tupla.getT2(), id, tupla.getT1())))
+                .map(hotel -> {
+                    respuesta.put("hotel", hotel);
+                    respuesta.put("timestamp", new Date());
+                    return ResponseEntity.created(URI.create("/hotel/".concat(hotel.getId())))
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .body(respuesta);
+                })
+                .defaultIfEmpty(new ResponseEntity(ErrorNotFound.error(id), HttpStatus.NOT_FOUND))
+                .onErrorResume(t -> {
+
+                    return Mono.just(t).cast(WebExchangeBindException.class)
+                            .flatMap(e -> Mono.just(e.getFieldErrors()))
+                            .flatMapMany(Flux::fromIterable)
+                            .map(fieldError -> "El campo : " + fieldError.getField() + " "
+                                    + fieldError.getDefaultMessage())
+                            .collectList()
+                            .flatMap(list -> {
+                                respuesta.put("errores", list);
+                                respuesta.put("timestamp", new Date());
+                                return Mono.just(ResponseEntity.badRequest().body(respuesta));
+                            });
+                });
+
 
     }
+
+    public Hotel createHotelDb(HotelRequest hotelRequest, String id, Hotel hotel) {
+
+        return Hotel.builder()
+                .id(StringUtils.isEmpty(id) ? null : id)
+                .name(hotelRequest.getName())
+                .country(hotelRequest.getCountry())
+                .stars(hotelRequest.getStars())
+                .createdAt(StringUtils.isEmpty(id) ? LocalDateTime.now() : hotel.getCreatedAt())
+                .updatedAt(LocalDateTime.now())
+                .build();
+    }
+
 }
