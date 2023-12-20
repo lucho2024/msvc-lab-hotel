@@ -1,4 +1,11 @@
 spring:
+  application:
+    name: msvc-lab-hotel
+  config:
+    name: ${spring.application.name}
+  cloud:
+    config:
+      uri: http://localhost:8888
   data:
     mongodb:
       uri: mongodb://localhost:27017/hotelDb
@@ -17,3 +24,26 @@ logging:
       sunset:
         rider:
           msvclabhotel: DEBUG
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka
+
+management:
+  metrics:
+    tags:
+      application: ${spring.application.name}
+  endpoint:
+    shutdown:
+      enabled: true
+    metrics:
+      enabled: true
+  endpoints:
+    web:
+      base-path: /actuactor
+      exposure:
+        include: '*'
+  health:
+    default:
+      enabled: true
