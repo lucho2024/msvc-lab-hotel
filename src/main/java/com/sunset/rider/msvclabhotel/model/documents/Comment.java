@@ -7,36 +7,30 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDateTime;
 
-@Document(collection = "hotels")
+@Document(collection = "comments")
 @Getter
 @Setter
-@AllArgsConstructor
-@NoArgsConstructor
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @ToString
-public class Hotel {
-
+public class Comment {
 
     @Id
     private String id;
 
-    private String name;
+    private String guestId;
 
-    private String description;
+    private String comment;
 
-    private Float stars;
+    private String hotelId;
 
-    private String country;
-
-    private String city;
-
-    private String history;
-
-
+    private Integer stars;
 
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDateTime createdAt;
 
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDateTime updatedAt;
+
 }

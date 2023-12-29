@@ -12,4 +12,11 @@ public  class  ErrorNotFound {
         error.put("timestamp", LocalDateTime.now().toString());
         return  error;
     }
+
+    public static Map<String,String> errorAll(){
+        Map<String,String> error = new HashMap<>();
+        error.put("error"," base de datos esta vacia");
+        error.put("timestamp", LocalDateTime.now().toString());
+        return  error;
+    }
 }

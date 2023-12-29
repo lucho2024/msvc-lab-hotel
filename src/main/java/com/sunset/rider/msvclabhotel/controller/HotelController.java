@@ -129,6 +129,9 @@ public class HotelController {
                 .country(hotelRequest.getCountry())
                 .stars(hotelRequest.getStars())
                 .createdAt(StringUtils.isEmpty(id) ? LocalDateTime.now() : hotel.getCreatedAt())
+                .history(hotelRequest.getHistory())
+                .city(hotelRequest.getCity())
+                .description(hotelRequest.getDescription())
                 .updatedAt(LocalDateTime.now())
                 .build();
     }
