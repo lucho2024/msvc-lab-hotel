@@ -4,6 +4,8 @@ package com.sunset.rider.msvclabhotel.controller;
 import com.sunset.rider.msvclabhotel.model.documents.Comment;
 import com.sunset.rider.msvclabhotel.model.request.CommentRequest;
 import com.sunset.rider.msvclabhotel.model.utils.ErrorNotFound;
+import com.sunset.rider.msvclabhotel.model.utils.Utils;
+import com.sunset.rider.msvclabhotel.properties.HeadersProperties;
 import com.sunset.rider.msvclabhotel.service.CommentService;
 import com.sunset.rider.msvclabhotel.service.HotelService;
 import jakarta.validation.Valid;
@@ -13,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.support.WebExchangeBindException;
 import reactor.core.publisher.Flux;
@@ -33,9 +36,12 @@ public class CommentController {
     @Autowired
     private HotelService hotelService;
 
-    @GetMapping
-    public Mono<ResponseEntity<?>> FindAll() {
+    @Autowired
+    private HeadersProperties headersProperties;
 
+    @GetMapping
+    public Mono<ResponseEntity<?>> FindAll(@RequestHeader MultiValueMap<String, String> headers) {
+        Utils.validHeaders(headers,headersProperties.getRequired());
         return commentService.findAll()
                 .collectList()
                 .flatMap(comment -> {
@@ -49,8 +55,8 @@ public class CommentController {
     }
 
     @GetMapping("/{id}")
-    public Mono<ResponseEntity<?>> findById(@PathVariable String id) {
-
+    public Mono<ResponseEntity<?>> findById(@RequestHeader MultiValueMap<String, String> headers,@PathVariable String id) {
+        Utils.validHeaders(headers,headersProperties.getRequired());
         return commentService.findById(id)
                 .map(comment -> new ResponseEntity<>(comment, HttpStatus.OK))
                 .defaultIfEmpty(new ResponseEntity(ErrorNotFound.error(id), HttpStatus.NOT_FOUND));
@@ -59,14 +65,14 @@ public class CommentController {
 
 
     @DeleteMapping("/{id}")
-    public Mono<ResponseEntity<Void>> delete(@PathVariable String id) {
-
+    public Mono<ResponseEntity<Void>> delete(@RequestHeader MultiValueMap<String, String> headers,@PathVariable String id) {
+        Utils.validHeaders(headers,headersProperties.getRequired());
         return commentService.deleteComment(id).then(Mono.just(new ResponseEntity<Void>(HttpStatus.NO_CONTENT)));
     }
 
     @GetMapping("/hotel/{id}")
-    public Mono<ResponseEntity<?>> findByHotelId(@PathVariable String id) {
-
+    public Mono<ResponseEntity<?>> findByHotelId(@RequestHeader MultiValueMap<String, String> headers,@PathVariable String id) {
+        Utils.validHeaders(headers,headersProperties.getRequired());
         return commentService.findByHotelId(id)
                 .collectList()
                 .flatMap(hotel -> {
@@ -80,7 +86,9 @@ public class CommentController {
     }
 
     @PostMapping
-    public Mono<ResponseEntity<Map<String, Object>>> save(@RequestBody @Valid Mono<CommentRequest> commentRequest) {
+    public Mono<ResponseEntity<Map<String, Object>>> save(@RequestHeader MultiValueMap<String, String> headers,
+                                                          @RequestBody @Valid Mono<CommentRequest> commentRequest) {
+        Utils.validHeaders(headers,headersProperties.getRequired());
         Map<String, Object> respuesta = new HashMap<>();
         List<Integer> stars = new ArrayList<>();
 

@@ -3,6 +3,8 @@ package com.sunset.rider.msvclabhotel.controller;
 import com.sunset.rider.msvclabhotel.model.documents.Hotel;
 import com.sunset.rider.msvclabhotel.model.request.HotelRequest;
 import com.sunset.rider.msvclabhotel.model.utils.ErrorNotFound;
+import com.sunset.rider.msvclabhotel.model.utils.Utils;
+import com.sunset.rider.msvclabhotel.properties.HeadersProperties;
 import com.sunset.rider.msvclabhotel.service.HotelService;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
@@ -11,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.support.WebExchangeBindException;
 import reactor.core.publisher.Flux;
@@ -20,6 +23,7 @@ import java.net.URI;
 import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -28,9 +32,13 @@ import java.util.Map;
 public class HotelController {
     @Autowired
     private HotelService hotelService;
+    @Autowired
+    private HeadersProperties headersProperties;
 
     @GetMapping
-    public Mono<ResponseEntity<Flux<Hotel>>> getAll() {
+    public Mono<ResponseEntity<Flux<Hotel>>> getAll(@RequestHeader MultiValueMap<String, String> headers) {
+
+        Utils.validHeaders(headers,headersProperties.getRequired());
 
         return Mono.just(
                 ResponseEntity.ok().body(hotelService.findAll())
@@ -38,15 +46,20 @@ public class HotelController {
     }
 
     @GetMapping("/{id}")
-    public Mono<ResponseEntity<Hotel>> findById(@PathVariable String id) {
+    public Mono<ResponseEntity<Hotel>> findById(@RequestHeader MultiValueMap<String, String> headers,@PathVariable String id) {
+
+
+        Utils.validHeaders(headers,headersProperties.getRequired());
+
         return hotelService.findyById(id).map(
                 hotel -> ResponseEntity.ok().body(hotel)
         ).defaultIfEmpty(ResponseEntity.notFound().build());
     }
 
     @PostMapping
-    public Mono<ResponseEntity<Map<String, Object>>> save(@Valid @RequestBody Mono<HotelRequest> hotel) {
-
+    public Mono<ResponseEntity<Map<String, Object>>> save(@RequestHeader MultiValueMap<String, String> headers,
+                                                          @Valid @RequestBody Mono<HotelRequest> hotel) {
+        Utils.validHeaders(headers,headersProperties.getRequired());
         Map<String, Object> respuesta = new HashMap<>();
 
 
@@ -79,8 +92,8 @@ public class HotelController {
     }
 
     @DeleteMapping("/{id}")
-    public Mono<ResponseEntity<Void>> delete(@PathVariable String id) {
-
+    public Mono<ResponseEntity<Void>> delete(@RequestHeader MultiValueMap<String, String> headers,@PathVariable String id) {
+        Utils.validHeaders(headers,headersProperties.getRequired());
         return hotelService.delete(id)
                 .then(Mono.just(new ResponseEntity<Void>(HttpStatus.NO_CONTENT)));
 
@@ -88,8 +101,11 @@ public class HotelController {
     }
 
     @PutMapping("/{id}")
-    public Mono<ResponseEntity<Map<String, Object>>> update(@PathVariable String id, @Valid @RequestBody Mono<HotelRequest> hotelRequest) {
+    public Mono<ResponseEntity<Map<String, Object>>> update(@RequestHeader MultiValueMap<String, String> headers,
+                                                            @PathVariable String id,
+                                                            @Valid @RequestBody Mono<HotelRequest> hotelRequest) {
 
+        Utils.validHeaders(headers,headersProperties.getRequired());
         Map<String, Object> respuesta = new HashMap<>();
 
         return hotelService.findyById(id)
