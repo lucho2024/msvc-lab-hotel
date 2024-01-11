@@ -8,7 +8,7 @@
 		<version>3.2.0</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
-	<groupId>com.sunset.rider</groupId>
+	<groupId>com.sunset.rider.lab</groupId>
 	<artifactId>msvc-lab-hotel</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>msvc-lab-hotel</name>
@@ -91,6 +91,11 @@
 			<version>2.3.0</version>
 		</dependency>
 
+		<dependency>
+			<groupId>com.sunset.rider.lab</groupId>
+			<artifactId>exception-sunset-rider</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
 
 	</dependencies>
 	<dependencyManagement>

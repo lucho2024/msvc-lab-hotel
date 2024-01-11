@@ -38,6 +38,7 @@ logging:
 
 eureka:
   client:
+    enabled: false
     serviceUrl:
       defaultZone: http://localhost:8761/eureka
 
@@ -67,3 +68,20 @@ springdoc:
 headers:
   required:
     - Authorization
+
+
+apis:
+  hotel:
+    updated-by-hotel-id: "/hotel/{id}"
+    get-hotel-by-id: "/hotel/{id}"
+    deleted-hotel-by-id: "/hotel/{id}"
+    create-hotel: "/hotel"
+    find-all: "/hotel"
+  comment:
+    find-all: "/hotel/comment"
+    create-comment: "/hotel/comment"
+    get-comment-by-id: "/hotel/comment/{id}"
+    deleted-by-comment-id: "/hotel/comment/{id}"
+    get-comment-by-hotel-id: "/hotel/comment/hotel{id}"
+
+
