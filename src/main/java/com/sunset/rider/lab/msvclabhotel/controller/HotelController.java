@@ -1,11 +1,11 @@
 package com.sunset.rider.lab.msvclabhotel.controller;
 
-import com.sunset.rider.lab.msvclabhotel.properties.HeadersProperties;
+import com.sunset.rider.lab.exceptions.exception.NotFoundException;
 import com.sunset.rider.lab.msvclabhotel.model.documents.Hotel;
 import com.sunset.rider.lab.msvclabhotel.model.request.HotelRequest;
-import com.sunset.rider.lab.msvclabhotel.utils.ErrorNotFound;
-import com.sunset.rider.lab.msvclabhotel.utils.Utils;
+import com.sunset.rider.lab.msvclabhotel.properties.HeadersProperties;
 import com.sunset.rider.lab.msvclabhotel.service.HotelService;
+import com.sunset.rider.lab.msvclabhotel.utils.Utils;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -37,7 +37,7 @@ public class HotelController {
     @GetMapping("${apis.hotel.find-all}")
     public Mono<ResponseEntity<Flux<Hotel>>> getAll(@RequestHeader MultiValueMap<String, String> headers) {
 
-        Utils.validHeaders(headers,headersProperties.getRequired());
+        Utils.validHeaders(headers, headersProperties.getRequired());
 
         return Mono.just(
                 ResponseEntity.ok().body(hotelService.findAll())
@@ -45,20 +45,20 @@ public class HotelController {
     }
 
     @GetMapping("${apis.hotel.get-hotel-by-id}")
-    public Mono<ResponseEntity<Hotel>> findById(@RequestHeader MultiValueMap<String, String> headers,@PathVariable String id) {
+    public Mono<ResponseEntity<Hotel>> findById(@RequestHeader MultiValueMap<String, String> headers, @PathVariable String id) {
 
 
-        Utils.validHeaders(headers,headersProperties.getRequired());
+        Utils.validHeaders(headers, headersProperties.getRequired());
 
         return hotelService.findyById(id).map(
                 hotel -> ResponseEntity.ok().body(hotel)
-        ).defaultIfEmpty(new ResponseEntity(ErrorNotFound.error(id), HttpStatus.NOT_FOUND));
+        ).switchIfEmpty(Mono.error(new NotFoundException(id)));
     }
 
     @PostMapping("${apis.hotel.create-hotel}")
     public Mono<ResponseEntity<Map<String, Object>>> save(@RequestHeader MultiValueMap<String, String> headers,
                                                           @Valid @RequestBody Mono<HotelRequest> hotel) {
-        Utils.validHeaders(headers,headersProperties.getRequired());
+        Utils.validHeaders(headers, headersProperties.getRequired());
         Map<String, Object> respuesta = new HashMap<>();
 
 
@@ -91,8 +91,8 @@ public class HotelController {
     }
 
     @DeleteMapping("${apis.hotel.deleted-hotel-by-id}")
-    public Mono<ResponseEntity<Void>> delete(@RequestHeader MultiValueMap<String, String> headers,@PathVariable String id) {
-        Utils.validHeaders(headers,headersProperties.getRequired());
+    public Mono<ResponseEntity<Void>> delete(@RequestHeader MultiValueMap<String, String> headers, @PathVariable String id) {
+        Utils.validHeaders(headers, headersProperties.getRequired());
         return hotelService.delete(id)
                 .then(Mono.just(new ResponseEntity<Void>(HttpStatus.NO_CONTENT)));
 
@@ -104,7 +104,7 @@ public class HotelController {
                                                             @PathVariable String id,
                                                             @Valid @RequestBody Mono<HotelRequest> hotelRequest) {
 
-        Utils.validHeaders(headers,headersProperties.getRequired());
+        Utils.validHeaders(headers, headersProperties.getRequired());
         Map<String, Object> respuesta = new HashMap<>();
 
         return hotelService.findyById(id)
@@ -117,9 +117,11 @@ public class HotelController {
                             .contentType(MediaType.APPLICATION_JSON)
                             .body(respuesta);
                 })
-                .defaultIfEmpty(new ResponseEntity(ErrorNotFound.error(id), HttpStatus.NOT_FOUND))
+                .switchIfEmpty(Mono.error(new NotFoundException(id)))
                 .onErrorResume(t -> {
-
+                    if (t instanceof NotFoundException) {
+                        return Mono.error(t);
+                    }
                     return Mono.just(t).cast(WebExchangeBindException.class)
                             .flatMap(e -> Mono.just(e.getFieldErrors()))
                             .flatMapMany(Flux::fromIterable)

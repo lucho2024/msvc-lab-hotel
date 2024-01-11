@@ -1,10 +1,10 @@
 package com.sunset.rider.lab.msvclabhotel.controller;
 
 
+import com.sunset.rider.lab.exceptions.exception.NotFoundException;
 import com.sunset.rider.lab.msvclabhotel.properties.HeadersProperties;
 import com.sunset.rider.lab.msvclabhotel.model.documents.Comment;
 import com.sunset.rider.lab.msvclabhotel.model.request.CommentRequest;
-import com.sunset.rider.lab.msvclabhotel.utils.ErrorNotFound;
 import com.sunset.rider.lab.msvclabhotel.utils.Utils;
 import com.sunset.rider.lab.msvclabhotel.service.CommentService;
 import com.sunset.rider.lab.msvclabhotel.service.HotelService;
@@ -46,7 +46,7 @@ public class CommentController {
                 .collectList()
                 .flatMap(comment -> {
                     if (comment.isEmpty()) {
-                        return Mono.just(new ResponseEntity<>(ErrorNotFound.errorAll(), HttpStatus.NOT_FOUND));
+                        throw new NotFoundException();
                     } else {
                         return Mono.just(new ResponseEntity<>(comment, HttpStatus.OK));
                     }
@@ -55,11 +55,11 @@ public class CommentController {
     }
 
     @GetMapping("${apis.comment.get-comment-by-id}")
-    public Mono<ResponseEntity<?>> findById(@RequestHeader MultiValueMap<String, String> headers,@PathVariable String id) {
+    public Mono<ResponseEntity<Comment>> findById(@RequestHeader MultiValueMap<String, String> headers, @PathVariable String id) {
         Utils.validHeaders(headers,headersProperties.getRequired());
         return commentService.findById(id)
                 .map(comment -> new ResponseEntity<>(comment, HttpStatus.OK))
-                .defaultIfEmpty(new ResponseEntity(ErrorNotFound.error(id), HttpStatus.NOT_FOUND));
+                .switchIfEmpty(Mono.error(new NotFoundException(id)));
 
     }
 
@@ -78,7 +78,7 @@ public class CommentController {
                 .flatMap(hotel -> {
 
                     if (hotel.isEmpty()) {
-                        return Mono.just(new ResponseEntity<>(ErrorNotFound.errorAll(), HttpStatus.NOT_FOUND));
+                        throw new NotFoundException(id);
                     } else {
                         return Mono.just(new ResponseEntity<>(hotel, HttpStatus.OK));
                     }
