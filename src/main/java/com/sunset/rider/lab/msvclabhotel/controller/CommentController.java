@@ -26,7 +26,7 @@ import java.time.LocalDateTime;
 import java.util.*;
 
 @RestController
-@RequestMapping("/hotel/comment")
+@RequestMapping("/v1")
 @Slf4j
 public class CommentController {
 
@@ -39,8 +39,8 @@ public class CommentController {
     @Autowired
     private HeadersProperties headersProperties;
 
-    @GetMapping
-    public Mono<ResponseEntity<?>> FindAll(@RequestHeader MultiValueMap<String, String> headers) {
+    @GetMapping("${apis.comment.find-all}")
+    public Mono<ResponseEntity<?>> findAll(@RequestHeader MultiValueMap<String, String> headers) {
         Utils.validHeaders(headers,headersProperties.getRequired());
         return commentService.findAll()
                 .collectList()
@@ -54,7 +54,7 @@ public class CommentController {
 
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("${apis.comment.get-comment-by-id}")
     public Mono<ResponseEntity<?>> findById(@RequestHeader MultiValueMap<String, String> headers,@PathVariable String id) {
         Utils.validHeaders(headers,headersProperties.getRequired());
         return commentService.findById(id)
@@ -64,13 +64,13 @@ public class CommentController {
     }
 
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("${apis.comment.deleted-by-comment-id}")
     public Mono<ResponseEntity<Void>> delete(@RequestHeader MultiValueMap<String, String> headers,@PathVariable String id) {
         Utils.validHeaders(headers,headersProperties.getRequired());
         return commentService.deleteComment(id).then(Mono.just(new ResponseEntity<Void>(HttpStatus.NO_CONTENT)));
     }
 
-    @GetMapping("/hotel/{id}")
+    @GetMapping("${apis.comment.get-comment-by-hotel-id}")
     public Mono<ResponseEntity<?>> findByHotelId(@RequestHeader MultiValueMap<String, String> headers,@PathVariable String id) {
         Utils.validHeaders(headers,headersProperties.getRequired());
         return commentService.findByHotelId(id)
@@ -85,7 +85,7 @@ public class CommentController {
                 });
     }
 
-    @PostMapping
+    @PostMapping("${apis.comment.create-comment}")
     public Mono<ResponseEntity<Map<String, Object>>> save(@RequestHeader MultiValueMap<String, String> headers,
                                                           @RequestBody @Valid Mono<CommentRequest> commentRequest) {
         Utils.validHeaders(headers,headersProperties.getRequired());

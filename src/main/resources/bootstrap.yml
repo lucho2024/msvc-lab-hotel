@@ -82,6 +82,6 @@ apis:
     create-comment: "/hotel/comment"
     get-comment-by-id: "/hotel/comment/{id}"
     deleted-by-comment-id: "/hotel/comment/{id}"
-    get-comment-by-hotel-id: "/hotel/comment/hotel{id}"
+    get-comment-by-hotel-id: "/hotel/comment/hotel/{id}"
 
 

@@ -52,7 +52,7 @@ public class HotelController {
 
         return hotelService.findyById(id).map(
                 hotel -> ResponseEntity.ok().body(hotel)
-        ).defaultIfEmpty(ResponseEntity.notFound().build());
+        ).defaultIfEmpty(new ResponseEntity(ErrorNotFound.error(id), HttpStatus.NOT_FOUND));
     }
 
     @PostMapping("${apis.hotel.create-hotel}")
