@@ -138,12 +138,28 @@ public class HotelController {
 
     }
 
+    @PostMapping("${apis.hotel.find-query}")
+   public Mono<ResponseEntity<Flux<Hotel>>> findByNameCityDescription(@RequestParam String value){
+
+        return  Mono.just(ResponseEntity.ok().body(hotelService.findByNameCityDescription(value))) ;
+
+   }
+
+
+   @GetMapping("${apis.hotel.find-by-country-id}")
+   public Mono<ResponseEntity<Flux<Hotel>>> findByCountryId(@PathVariable String countryId){
+
+      return  Mono.just(
+              ResponseEntity.ok().body(hotelService.findByCountryId(countryId))
+      );
+   }
+
     public Hotel createHotelDb(HotelRequest hotelRequest, String id, Hotel hotel) {
 
         return Hotel.builder()
                 .id(StringUtils.isEmpty(id) ? null : id)
                 .name(hotelRequest.getName())
-                .country(hotelRequest.getCountry())
+                .countryId(hotelRequest.getCountry())
                 .stars(hotelRequest.getStars())
                 .createdAt(StringUtils.isEmpty(id) ? LocalDateTime.now() : hotel.getCreatedAt())
                 .history(hotelRequest.getHistory())

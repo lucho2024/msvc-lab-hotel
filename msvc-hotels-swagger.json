@@ -1,0 +1,810 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "msvc-hotels",
+    "description": "This is a microservices that functionality is managment the creating and updating new hotels",
+    "termsOfService": "http://swagger.io/terms/",
+    "contact": {
+      "email": "sunsetsriders@gmail.com"
+    },
+    "license": {
+      "name": "Apache 2.0",
+      "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+    },
+    "version": "1.0.0"
+  },
+  "externalDocs": {
+    "description": "Find out more about Swagger",
+    "url": "http://swagger.io"
+  },
+  "servers": [
+    {
+      "url": "https://"
+    }
+  ],
+  "tags": [
+    {
+      "name": "hotel",
+      "description": "Everything about the hotels",
+      "externalDocs": {
+        "description": "Find out more",
+        "url": "http://swagger.io"
+      }
+    }
+  ],
+  "paths": {
+    "/v1/hotel/{hotelId}": {
+      "put": {
+        "tags": [
+          "hotel"
+        ],
+        "summary": "updated-by-hotel-id",
+        "description": "Update an existing hotel by Id",
+        "operationId": "updateHotel",
+        "parameters": [
+          {
+            "name": "hotelId",
+            "in": "path",
+            "description": "ID of hotel that needs to be fetched",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "Authorization",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "required": true
+          }
+        ],
+        "requestBody": {
+          "description": "Update an existent hotel",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/HotelRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HotelResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid ID supplied"
+          },
+          "404": {
+            "description": "Hotel not found"
+          },
+          "405": {
+            "description": "Validation exception"
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "hotel"
+        ],
+        "summary": "get-by-hotel-id",
+        "description": "Find hotel by id",
+        "operationId": "findByIdHotel",
+        "parameters": [
+          {
+            "name": "hotelId",
+            "in": "path",
+            "description": "ID of hotel that needs to be fetched",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "Authorization",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HotelResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid ID supplied"
+          },
+          "404": {
+            "description": "Hotel not found"
+          },
+          "405": {
+            "description": "Validation exception"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "hotel"
+        ],
+        "summary": "deleted-by-hotel-id",
+        "description": "Delete hotel by hotelId",
+        "operationId": "deleteByIdHotel",
+        "parameters": [
+          {
+            "name": "hotelId",
+            "in": "path",
+            "description": "ID of hotel that needs to be fetched",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "Authorization",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successful operation"
+          }
+        }
+      }
+    },
+    "/v1/hotel/country/{countryId}": {
+      "get": {
+        "tags": [
+          "hotel"
+        ],
+        "summary": "find-by-country-id",
+        "description": "find hotels by country",
+        "operationId": "findByCountryId",
+        "parameters": [
+          {
+            "name": "countryId",
+            "in": "path",
+            "description": "ID of hotel that needs to be fetched",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "Authorization",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "Invalid ID supplied"
+          },
+          "404": {
+            "description": "Hotel not found"
+          },
+          "405": {
+            "description": "Validation exception"
+          }
+        }
+      }
+    },
+    "/v1/hotel": {
+      "post": {
+        "tags": [
+          "hotel"
+        ],
+        "summary": "create-hotel",
+        "description": "Add a new Hotel",
+        "operationId": "addHotel",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "Authorization",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "required": true
+          }
+        ],
+        "requestBody": {
+          "description": "Create a new hotel",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/HotelRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HotelResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid ID supplied"
+          },
+          "404": {
+            "description": "Hotel not found"
+          },
+          "405": {
+            "description": "Validation exception"
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "hotel"
+        ],
+        "summary": "get-all",
+        "description": "Find all hotels",
+        "operationId": "findHotels",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "Authorization",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "oneOf": [
+                      {
+                        "$ref": "#/components/schemas/HotelResponse"
+                      },
+                      {
+                        "$ref": "#/components/schemas/HotelResponse"
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid ID supplied"
+          },
+          "404": {
+            "description": "Hotels not found"
+          },
+          "405": {
+            "description": "Validation exception"
+          }
+        }
+      }
+    },
+    "/v1/hotel/query": {
+      "post": {
+        "tags": [
+          "hotel"
+        ],
+        "summary": "find-query",
+        "description": "find all hotel by name,city or description",
+        "operationId": "findQuery",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "Authorization",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "required": true
+          },
+          {
+            "in": "query",
+            "name": "value",
+            "schema": {
+              "type": "string"
+            },
+            "description": "the value to search the hotel can be name,city or description",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "oneOf": [
+                      {
+                        "$ref": "#/components/schemas/HotelResponse"
+                      },
+                      {
+                        "$ref": "#/components/schemas/HotelResponse"
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          "405": {
+            "description": "Validation exception"
+          }
+        }
+      }
+    },
+    "/v1/hotel/comment": {
+      "get": {
+        "tags": [
+          "comment"
+        ],
+        "summary": "get-comments",
+        "description": "get all comments",
+        "operationId": "findcomments",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "Authorization",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "oneOf": [
+                      {
+                        "$ref": "#/components/schemas/CommentResponse"
+                      },
+                      {
+                        "$ref": "#/components/schemas/CommentResponse"
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid ID supplied"
+          },
+          "404": {
+            "description": "Hotel not found"
+          },
+          "405": {
+            "description": "Validation exception"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "comment"
+        ],
+        "summary": "post-comments",
+        "description": "create-comment",
+        "operationId": "savecomments",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "Authorization",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "required": true
+          }
+        ],
+        "requestBody": {
+          "description": "Create a new comment",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CommentRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CommentResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid ID supplied"
+          },
+          "404": {
+            "description": "Hotel not found"
+          },
+          "405": {
+            "description": "Validation exception"
+          }
+        }
+      }
+    },
+    "/v1/hotel/comment{commentId}": {
+      "get": {
+        "tags": [
+          "comment"
+        ],
+        "summary": "get-comments-by-id",
+        "description": "get comment by id",
+        "operationId": "findcommentbyid",
+        "parameters": [
+          {
+            "name": "commentId",
+            "in": "path",
+            "description": "ID of comment that needs to be fetched",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "Authorization",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "oneOf": [
+                      {
+                        "$ref": "#/components/schemas/CommentResponse"
+                      },
+                      {
+                        "$ref": "#/components/schemas/CommentResponse"
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid ID supplied"
+          },
+          "404": {
+            "description": "Hotel not found"
+          },
+          "405": {
+            "description": "Validation exception"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "comment"
+        ],
+        "summary": "delete-comments-by-id",
+        "description": "delete comment by id",
+        "operationId": "deletecommentbyid",
+        "parameters": [
+          {
+            "name": "commentId",
+            "in": "path",
+            "description": "ID of comment that needs to be fetched",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "Authorization",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "no content"
+          },
+          "400": {
+            "description": "Invalid ID supplied"
+          },
+          "404": {
+            "description": "Hotel not found"
+          },
+          "405": {
+            "description": "Validation exception"
+          }
+        }
+      }
+    },
+    "/v1/hotel/comment/hotel{hotelId}": {
+      "get": {
+        "tags": [
+          "comment"
+        ],
+        "summary": "get-comments-by-hotel-id",
+        "description": "get comment by hotel id",
+        "operationId": "findcommentbyhotelId",
+        "parameters": [
+          {
+            "name": "hotelId",
+            "in": "path",
+            "description": "ID of hotel that needs to be fetched",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "Authorization",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "oneOf": [
+                      {
+                        "$ref": "#/components/schemas/CommentResponse"
+                      },
+                      {
+                        "$ref": "#/components/schemas/CommentResponse"
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid ID supplied"
+          },
+          "404": {
+            "description": "Hotel not found"
+          },
+          "405": {
+            "description": "Validation exception"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "HotelRequest": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "intercontinetal"
+          },
+          "description": {
+            "type": "string",
+            "example": "hotel muy bueno"
+          },
+          "stars": {
+            "type": "number",
+            "example": 4
+          },
+          "countryId": {
+            "type": "string",
+            "example": 1
+          },
+          "city": {
+            "type": "string",
+            "example": "cali"
+          },
+          "history": {
+            "type": "string",
+            "example": "creado en 1890",
+            "maximum": 5
+          }
+        },
+        "required": [
+          "name",
+          "description",
+          "starts",
+          "countryId",
+          "city",
+          "addresses"
+        ]
+      },
+      "CommentRequest": {
+        "type": "object",
+        "properties": {
+          "guestId": {
+            "type": "string",
+            "example": "12dsdsaa"
+          },
+          "comment": {
+            "type": "string",
+            "example": "muy bueno"
+          },
+          "hotelId": {
+            "type": "string",
+            "example": "hkjhkjh11"
+          },
+          "stars": {
+            "type": "number",
+            "example": 4,
+            "maximum": 5
+          }
+        },
+        "required": [
+          "guestId",
+          "comment",
+          "hotelId",
+          "starts"
+        ]
+      },
+      "HotelResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": 10
+          },
+          "name": {
+            "type": "string",
+            "example": "intercontinetal"
+          },
+          "description": {
+            "type": "string",
+            "example": "hotel muy bueno"
+          },
+          "starts": {
+            "type": "number",
+            "example": 4
+          },
+          "countryId": {
+            "type": "string",
+            "example": 1
+          },
+          "city": {
+            "type": "string",
+            "example": "cali"
+          },
+          "history": {
+            "type": "string",
+            "example": "creado en 1890"
+          },
+          "createdAt": {
+            "type": "string",
+            "example": "2023-12-01T00:00:00.000Z"
+          },
+          "updatedAt": {
+            "type": "string",
+            "example": "2023-12-01T00:00:00.000Z"
+          }
+        }
+      },
+      "CommentResponse": {
+        "type": "object",
+        "properties": {
+          "commentId": {
+            "type": "string",
+            "example": 10
+          },
+          "guestId": {
+            "type": "string",
+            "example": "12dsdsaa"
+          },
+          "comment": {
+            "type": "string",
+            "example": "muy bueno"
+          },
+          "hotelId": {
+            "type": "string",
+            "example": "hkjhkjh11"
+          },
+          "stars": {
+            "type": "number",
+            "example": 4,
+            "maximum": 5
+          },
+          "createdAt": {
+            "type": "string",
+            "example": "2023-12-01T00:00:00.000Z"
+          },
+          "updatedAt": {
+            "type": "string",
+            "example": "2023-12-01T00:00:00.000Z"
+          }
+        }
+      },
+      "ApiResponse": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "type": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          }
+        },
+        "xml": {
+          "name": "##default"
+        }
+      }
+    }
+  }
+}

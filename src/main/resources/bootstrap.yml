@@ -30,11 +30,13 @@ logging:
         data:
           mongodb:
             core:
-              MongoTemplate: DEBUG
+              ReactiveMongoTemplate: DEBUG
     com:
       sunset:
         rider:
-          msvclabhotel: DEBUG
+          lab:
+            msvclabhotel: DEBUG
+
 
 eureka:
   client:
@@ -77,6 +79,8 @@ apis:
     deleted-hotel-by-id: "/hotel/{id}"
     create-hotel: "/hotel"
     find-all: "/hotel"
+    find-query : "/hotel/query"
+    find-by-country-id: "/hotel/country/{countryId}"
   comment:
     find-all: "/hotel/comment"
     create-comment: "/hotel/comment"

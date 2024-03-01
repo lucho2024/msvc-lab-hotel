@@ -26,13 +26,11 @@ public class Hotel {
 
     private Float stars;
 
-    private String country;
+    private String countryId;
 
     private String city;
 
     private String history;
-
-
 
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDateTime createdAt;

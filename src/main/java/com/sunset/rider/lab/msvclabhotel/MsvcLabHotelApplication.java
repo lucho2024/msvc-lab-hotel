@@ -40,7 +40,7 @@ public class MsvcLabHotelApplication implements CommandLineRunner {
 
         Flux.just(
                         Hotel.builder().name("inter")
-                                .country("CO")
+                                .countryId("CO")
                                 .stars(1F)
                                 .description("super hotel")
                                 .city("cali")
@@ -49,7 +49,7 @@ public class MsvcLabHotelApplication implements CommandLineRunner {
                                 .updatedAt(LocalDateTime.now())
                                 .build(),
                         Hotel.builder().name("hscb")
-                                .country("CO")
+                                .countryId("CO")
                                 .stars(1F)
                                 .description("super hotel")
                                 .city("cali")
