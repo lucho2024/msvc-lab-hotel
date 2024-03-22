@@ -21,4 +21,6 @@ public class CommentRequest {
     private String hotelId;
     @NotNull(message = "no debe ser vacio o nulo")
     private Integer stars;
+    @NotEmpty(message = "no debe ser vacio o nulo")
+    private String nameGuest;
 }

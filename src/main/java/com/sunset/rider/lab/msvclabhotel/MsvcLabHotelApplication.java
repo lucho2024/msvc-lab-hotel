@@ -35,7 +35,7 @@ public class MsvcLabHotelApplication implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        mongoTemplate.dropCollection("hotels").subscribe();
+    /*    mongoTemplate.dropCollection("hotels").subscribe();
         mongoTemplate.dropCollection("comments").subscribe();
 
         Flux.just(
@@ -67,5 +67,7 @@ public class MsvcLabHotelApplication implements CommandLineRunner {
                                 .stars(5).build()
                 ).flatMap(comment -> commentRepository.save(comment))
                 .subscribe(comment -> log.info("Insert : " + comment.getId()));
+                */
+
     }
 }

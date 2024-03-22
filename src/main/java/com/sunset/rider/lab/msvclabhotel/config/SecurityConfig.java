@@ -23,6 +23,7 @@ public class SecurityConfig {
         return httpSecurity.authorizeExchange(exchanges -> exchanges
                         .pathMatchers(HttpMethod.GET,"/v1/hotel").permitAll()
                         .pathMatchers(HttpMethod.GET,"/v1/hotel/**").permitAll()
+                        .pathMatchers(HttpMethod.POST,"/v1/hotel/query/**").permitAll()
                         .pathMatchers("/v1/hotel").hasAuthority("ROLE_ADMIN")
                         .anyExchange().authenticated())
                 .oauth2ResourceServer(oauth -> {

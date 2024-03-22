@@ -22,6 +22,7 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.net.URI;
+import java.text.DecimalFormat;
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -90,7 +91,7 @@ public class CommentController {
                                                           @RequestBody @Valid Mono<CommentRequest> commentRequest) {
         Utils.validHeaders(headers,headersProperties.getRequired());
         Map<String, Object> respuesta = new HashMap<>();
-        List<Integer> stars = new ArrayList<>();
+        List<Float> stars = new ArrayList<>();
 
 
         return commentRequest
@@ -100,10 +101,12 @@ public class CommentController {
                                     .collectList()
                                     .zipWith(hotelService.findyById(c.getHotelId()))
                                     .flatMap(tupla -> {
-                                        tupla.getT1().forEach(h -> stars.add(h.getStars()));
+                                        tupla.getT1().forEach(h -> stars.add(Float.valueOf(h.getStars())));
                                         log.info("lista" + tupla.getT1());
-                                        Float avg = (float) (stars.stream().reduce(0, Integer::sum) / stars.size());
-                                        tupla.getT2().setStars(avg);
+                                        Float sumaStars = stars.stream().reduce((float) 0, Float::sum);
+                                        Float avg = (sumaStars>0) ? sumaStars / stars.size():0;
+
+                                        tupla.getT2().setStars((float) (Math.round(avg * 100d) / 100d));
                                         tupla.getT2().setUpdatedAt(LocalDateTime.now());
                                         log.info("promedio " + avg);
                                         return hotelService
@@ -149,6 +152,7 @@ public class CommentController {
                 .stars(commentRequest.getStars())
                 .hotelId(commentRequest.getHotelId())
                 .comment(commentRequest.getComment())
+                .nameGuest(commentRequest.getNameGuest())
                 .createdAt(StringUtils.isEmpty(id) ? LocalDateTime.now() : comment.getCreatedAt())
                 .updatedAt(LocalDateTime.now())
                 .build();

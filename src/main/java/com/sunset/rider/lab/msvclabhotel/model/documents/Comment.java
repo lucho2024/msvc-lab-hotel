@@ -23,6 +23,8 @@ public class Comment {
 
     private String comment;
 
+    private String nameGuest;
+
     private String hotelId;
 
     private Integer stars;
